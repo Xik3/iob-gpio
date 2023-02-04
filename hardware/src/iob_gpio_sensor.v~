@@ -1,0 +1,32 @@
+`timescale 1ns/1ps
+
+`include "iob_lib.vh"
+`include "iob_gpio_swreg_def.vh"
+
+
+module Movement_sensor(Q, D, clk, sensor, enable, rst)
+
+
+   wire  OUT_OR;
+   wire  OUT_NOT;
+   wire  D;
+   wire  OUT_FF;
+   assign OUT_OR  = sensor | Q;
+   assign OUT_NOT = -rst;
+   assign D = OUT_OR & OUT_NOT;
+   
+   
+   input sensor; // Data input
+   input rst;
+   
+   input clk;
+   input enable;
+   
+   output reg Q; // output Q
+	      
+   
+   //Or u1(out_or, sensor, Q);
+   //inv u2(.b(out_not),rst);
+   //and_2_1 u3(D, out_or,out_not);
+   //RisingEdge_DFlipFlop_SyncReset u4(Q,clk,sync_reset,D,enable);
+endmodule

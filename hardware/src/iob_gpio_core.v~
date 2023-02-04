@@ -1,0 +1,95 @@
+`timescale 1ns/1ps
+
+`include "iob_lib.vh"
+`include "iob_gpio_swreg_def.vh"
+
+
+module Movement_sensor(D, clk, sync_reset, Q, sensor, en, rst)
+
+   input D; // Data input
+   input out_or;
+   input out_not;
+   
+   input clk; // clock input 
+   input sync_reset; // synchronous reset
+   input sensor;
+   input enable;
+   input rst;
+   
+   output reg Q; // output Q
+	      );
+
+   Or u1(out_or, sensor, Q);
+   inv u2(.b(out_not),rst);
+   and_2_1 u3(D, out_or,out_not);
+   RisingEdge_DFlipFlop_SyncReset u4(Q,clk,sync_reset,D,enable);
+endmodule
+ 
+ 
+
+module RisingEdge_DFlipFlop_SyncReset(out_flop,clk_in,sync_reset,in_flop,enable);
+   input in_flop; // Data input 
+   input clk_in; // clock input 
+   input sync_reset; // synchronous reset high level
+   input enable;
+   output reg out_flop; // output Q 
+   always @(posedge clk) 
+     begin
+	if(enable == 1'b1)
+	  begin
+	     if(sync_reset==1'b1)
+	       begin
+		  Q <= 1'b0;
+	       end
+	     else
+	       begin
+		  Q <= D;
+	       end 
+	  end // if (enable == 1'b1)
+	else
+	  begin
+	     Q <= 1'b0;
+	  end // else: !if(enable == 1'b1)
+     end // always @ (posedge clk)	     
+endmodule 
+
+module Or(output reg Y, input A, B);
+   always @ (A or B) begin
+      if (A == 1'b0 & B == 1'b0) 
+	begin
+         Y = 1'b0;
+      end
+      else 
+        Y = 1'b1; 
+	   end
+endmodule
+
+module inv(b, a)
+
+	input a;
+	output reg b;
+	
+   always @ (a) begin 
+    	b=~a;
+  	end
+  
+endmodule
+
+
+module and_2_1(c,a,b);
+	input a;
+	input b;
+	output reg c;
+	
+	
+	always @(a or b) begin 
+	if (a==1'b1 & b==1'b1)
+		c= 1'b1;
+	else	
+		c=1'b0;
+	end
+
+endmodule // and_2_1
+
+
+

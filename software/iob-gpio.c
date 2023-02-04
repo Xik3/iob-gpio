@@ -6,7 +6,9 @@
 void gpio_init(int base_address){
   IOB_GPIO_INIT_BASEADDR(base_address);
 }
-
+uint32_t gpio_sensor_get(){
+  return IOB_GPIO_GET_INPUT_SENSOR();
+}  
 //Get values from inputs
 uint32_t gpio_get(){
   return IOB_GPIO_GET_INPUT();
