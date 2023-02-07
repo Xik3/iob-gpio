@@ -13,7 +13,8 @@
       .gpio_output_enable (gpio_output_enable),
 
       .SENSOR_IN (SENSOR_IN),
-      .GPIO_SENSOR_OUTPUT(GPIO_SENSOR_OUTPUT),
+      .GPIO_SENSOR_OUTPUT_I(GPIO_SENSOR_OUTPUT_I),
+      .GPIO_SENSOR_OUTPUT_O(GPIO_SENSOR_OUTPUT_O),
       //.OUT_FF(OUT_FF),
       // CPU interface
       .valid   (slaves_req[`valid(`GPIO)]),

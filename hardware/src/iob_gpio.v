@@ -21,9 +21,10 @@ module iob_gpio
     // output enable can be used to tristate outputs on external module
     output [GPIO_W-1:0] gpio_output_enable,
 
-    input SENSOR_IN,
+    input [1:0] SENSOR_IN,
     //input GPIO_OUTPUT_SENSOR_READ,
-    output GPIO_SENSOR_OUTPUT,
+    output GPIO_SENSOR_OUTPUT_I,
+    output GPIO_SENSOR_OUTPUT_O,
    // output OUT_FF,
     
 
@@ -59,20 +60,28 @@ module iob_gpio
     );
    `IOB_VAR(RST_SENSOR, DATA_W)
    `IOB_VAR(COUNTER_OUT, DATA_W)
-   `IOB_WIRE(SENSOR_OUTPUT, 1)
+   `IOB_WIRE(SENSOR_OUTPUT_I, 1)
+   `IOB_WIRE(SENSOR_OUTPUT_O, 1)
    iob_gpio_core iob_gpio_core0 (
       .clk         (clk),
-      .sensor      (SENSOR_IN),
+      .sensor      (SENSOR_IN[0]),
       .enable      (gpio_input[0]),
       .rst         (RST_SENSOR),
-      .Q           (SENSOR_OUTPUT)
+      .Q           (SENSOR_OUTPUT_I)
       );
 
-   //assign	   counter_rst = clk & SENSOR_IN;
-   `IOB_MODCNT_AR(clk, rst, 0, COUNTER_OUT, 30)
+   iob_gpio_core iob_gpio_core1 (
+      .clk         (clk),
+      .sensor      (SENSOR_IN[1]),
+      .enable      (gpio_input[0]),
+      .rst         (RST_SENSOR),
+      .Q           (SENSOR_OUTPUT_O)
+      );
+
+
+   `IOB_MODCNT_AR(clk, rst, 0, COUNTER_OUT, 500000)
    
    
-   //assign RST_SENSOR = SENSOR_IN == 1 ? 1:0;
    assign RST_SENSOR = COUNTER_OUT == 0 ? 0:1;
    // GPIO_COUNTER_PER_wdata
 
@@ -80,10 +89,14 @@ module iob_gpio
  
    // Read GPIO
    assign GPIO_INPUT_rdata = gpio_input;
-   assign GPIO_INPUT_SENSOR_rdata= SENSOR_IN;
-   
+   assign GPIO_INPUT_SENSOR_GENERAL_rdata = SENSOR_IN;
+   assign GPIO_INPUT_SENSOR_I_rdata = SENSOR_IN[0];
+   assign GPIO_INPUT_SENSOR_O_rdata = SENSOR_IN[1];
+    
    // Write GPIO
-   assign GPIO_SENSOR_OUTPUT = SENSOR_OUTPUT;
+   assign GPIO_SENSOR_OUTPUT_I = SENSOR_OUTPUT_I;
+   assign GPIO_SENSOR_OUTPUT_O = SENSOR_OUTPUT_O;
+   
    //assign GPIO_OUTPUT_SENSOR_READ = SENSOR_OUTPUT;
  
    assign gpio_output = GPIO_OUTPUT;

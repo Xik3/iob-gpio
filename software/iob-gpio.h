@@ -10,9 +10,14 @@ void gpio_init(int base_address);
 //Get values from inputs
 uint32_t gpio_get();
 
+uint32_t gpio_sensor_i_get();
+
+uint32_t gpio_sensor_o_get();
+
 uint32_t gpio_sensor_get();
 
 uint32_t gpio_sensor_output_get();
+
 
 //Set values on outputs
 void gpio_set(uint32_t outputs);
